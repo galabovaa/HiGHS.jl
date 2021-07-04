@@ -39,7 +39,8 @@ end
 function test_contlineartest(model, config)
     excludes = [
         # VariablePrimalStart not supported.
-        "partial_start",
+        # "partial_start",
+        "p",
     ]
     if MOI.get(model, MOI.RawParameter("solver")) == "ipm"
         # TODO(odow): investigate

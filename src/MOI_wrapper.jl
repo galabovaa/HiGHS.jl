@@ -69,6 +69,8 @@ mutable struct _VariableInfo
     lessthan_name::String
     greaterthan_interval_or_equalto_name::String
 
+    start::Union{Float64,Nothing}
+
     function _VariableInfo(
         index::MOI.VariableIndex,
         column::Cint,
@@ -344,6 +346,39 @@ end
 
 function MOI.get(::Optimizer, ::MOI.ListOfConstraintAttributesSet)
     return MOI.AbstractConstraintAttribute[MOI.ConstraintName()]
+end
+
+function MOI.set(
+    model::Optimizer,
+    ::MOI.VariablePrimalStart,
+    x::MOI.VariableIndex,
+    value::Union{Nothing,Float64},
+)
+    info = _info(model, x)
+    info.start = value
+    grb_value = value !== nothing ? value : GRB_UNDEFINED
+
+    _check_ret(ret)
+    # todo 
+
+    ret = 0
+    return
+end
+
+function MOI.get(
+    model::Optimizer,
+    ::MOI.VariablePrimalStart,
+    x::MOI.VariableIndex,
+)
+    return _info(model, x).start
+end
+
+function MOI.supports(
+    ::HiGHS.Optimizer,
+    ::MOI.VariablePrimalStart,
+    ::Type{MOI.VariableIndex},
+)
+    return true
 end
 
 function MOI.get(model::Optimizer, ::MOI.NumberOfConstraints{F,S}) where {F,S}
