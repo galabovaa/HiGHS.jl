@@ -356,12 +356,8 @@ function MOI.set(
 )
     info = _info(model, x)
     info.start = value
-    grb_value = value !== nothing ? value : GRB_UNDEFINED
-
-    _check_ret(ret)
     # todo 
 
-    ret = 0
     return
 end
 
